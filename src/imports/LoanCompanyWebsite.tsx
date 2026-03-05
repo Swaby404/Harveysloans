@@ -1,5 +1,5 @@
 import svgPaths from "./svg-jqujp1fmyh";
-import imgImageHarveysLoans from "figma:asset/e91ed6d83f2690a79935309cf8f1610c8d4c98b8.png";
+import imgImageHarveysLoans from "./assets/harvey-loans-logo.png";
 
 function ImageHarveysLoans() {
   return (
@@ -92,7 +92,7 @@ function ImageHarveysLoans1() {
 
 function Container4() {
   return (
-    <div className="absolute content-stretch flex h-[544px] items-center justify-center left-[632px] rounded-[16px] top-0 w-[584px]" data-name="Container" style={{ backgroundImage: "linear-gradient(137.031deg, rgb(238, 242, 255) 0%, rgb(239, 246, 255) 100%)" }}>
+    <div className="absolute content-stretch flex h-[544px] items-center justify-center left-[632px] rounded-[16px] top-0 w-[584px] bg-gradient-to-br from-[rgb(238,242,255)] to-[rgb(239,246,255)]" data-name="Container">
       <ImageHarveysLoans1 />
     </div>
   );
@@ -119,8 +119,8 @@ function Icon() {
   return (
     <div className="absolute left-[16px] size-[32px] top-[16px]" data-name="Icon">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 32 32">
-        <g id="Icon">
-          <path d={svgPaths.p29ed4e00} id="Vector" stroke="var(--stroke-0, #4F39F6)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.66667" />
+        <g id="Icon-1">
+          <path d={svgPaths.p29ed4e00} id="Vector-1" stroke="var(--stroke-0, #4F39F6)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.66667" />
         </g>
       </svg>
     </div>
@@ -165,8 +165,8 @@ function Icon1() {
   return (
     <div className="absolute left-[16px] size-[32px] top-[16px]" data-name="Icon">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 32 32">
-        <g id="Icon">
-          <path d={svgPaths.p13bade00} id="Vector" stroke="var(--stroke-0, #4F39F6)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.66667" />
+        <g id="Icon-2">
+          <path d={svgPaths.p13bade00} id="Vector-2" stroke="var(--stroke-0, #4F39F6)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.66667" />
         </g>
       </svg>
     </div>

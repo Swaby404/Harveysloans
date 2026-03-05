@@ -1,7 +1,7 @@
-import React from "react";
 import { ChevronRight } from "lucide-react";
 import svgPaths from "../imports/svg-jqujp1fmyh";
-import imgImageHarveysLoans from "figma:asset/e91ed6d83f2690a79935309cf8f1610c8d4c98b8.png";
+import imgImageHarveysLoans from "../assets/harvey-loans-logo.png";
+ 
 
 const Logo = ({ className = "h-12 w-auto" }: { className?: string }) => (
   <img
@@ -38,6 +38,7 @@ export default function App() {
               
               <div className="flex gap-4">
                 <button
+                  type="button"
                   className="bg-[#4F39F6] text-white px-8 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-[#3d2bd9] transition-colors shadow-md shadow-indigo-200"
                 >
                   Apply Now <ChevronRight size={20} />
@@ -50,10 +51,7 @@ export default function App() {
               <div className="aspect-square lg:aspect-auto lg:h-[544px] w-full max-w-[584px] mx-auto rounded-3xl overflow-hidden relative group">
                 {/* Background Gradient */}
                 <div 
-                  className="absolute inset-0"
-                  style={{ 
-                    backgroundImage: "linear-gradient(137.031deg, rgb(238, 242, 255) 0%, rgb(239, 246, 255) 100%)" 
-                  }}
+                  className="absolute inset-0 bg-gradient-to-br from-[#eef2ff] to-[#eff6ff]"
                 />
                 
                 {/* Floating Elements Background Pattern (Optional subtle detail) */}
