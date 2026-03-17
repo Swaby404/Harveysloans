@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronRight, X, CheckCircle2, Loader2, Printer } from "lucide-react";
 import svgPaths from "../imports/svg-jqujp1fmyh";
@@ -23,6 +23,8 @@ const InlineInput = ({ width = "w-32", type = "text", className: _className, ...
 const LoanAgreementDocument = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -55,56 +57,82 @@ const LoanAgreementDocument = ({ isOpen, onClose }: { isOpen: boolean; onClose: 
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Construct email parameters
-    const subject = encodeURIComponent(`New Loan Agreement Submission - ${formData.borrowerName}`);
-    const body = encodeURIComponent(
-`New Loan Agreement Submission
+    setSubmitError("");
+
+    try {
+      // Build the structured message for the email body
+      const message = `
+LOAN AGREEMENT SUBMISSION
+========================
 
 Effective Date: ${formData.effectiveDate}
 
-Borrower Details:
+BORROWER DETAILS:
 Name: ${formData.borrowerName}
 Address: ${formData.address}
 Email: ${formData.email}
 Phone: ${formData.phone}
 
-Loan Details:
+LOAN DETAILS:
 Principal Sum: $${formData.principalSum}
 Interest Rate: 30% per month
 Repayment: ${formData.installments} monthly payments of $${formData.installmentAmount} on the ${formData.paymentDay} of the month.
 
 Agreement Date: ${formData.agreementDate}
 
+SIGNATURES:
 Borrower Signature: ${formData.borrowerSignature}
 Signature Date: ${formData.signatureDate}
 
 The borrower has agreed to all terms and conditions outlined in the loan agreement.
-`);
+      `.trim();
 
-    const mailtoUrl = `mailto:Harveysloansllc@outlook.com?subject=${subject}&body=${body}`;
+      // Send directly to inbox via FormSubmit.co
+      // On first use, FormSubmit sends a confirmation email to Harveysloansllc@outlook.com
+      // — the owner must click "Confirm" once, then all future submissions go straight to the inbox.
+      const response = await fetch("https://formsubmit.co/ajax/Harveysloansllc@outlook.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          _subject: `New Loan Agreement - ${formData.borrowerName}`,
+          _template: "box",
+          "Effective Date": formData.effectiveDate,
+          "Borrower Name": formData.borrowerName,
+          "Borrower Address": formData.address,
+          "Borrower Email": formData.email,
+          "Borrower Phone": formData.phone,
+          "Principal Sum": `$${formData.principalSum}`,
+          "Interest Rate": "30% per month",
+          "Repayment Plan": `${formData.installments} monthly payments of $${formData.installmentAmount} on the ${formData.paymentDay} of the month`,
+          "Agreement Date": formData.agreementDate,
+          "Borrower Signature": formData.borrowerSignature,
+          "Signature Date": formData.signatureDate,
+          message,
+        }),
+      });
 
-    // Use a hidden anchor to open mailto without navigating the page away
-    setTimeout(() => {
-      const link = document.createElement("a");
-      link.href = mailtoUrl;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      if (!response.ok) {
+        throw new Error("Failed to send. Please try again.");
+      }
 
       setIsSubmitting(false);
       setIsSubmitted(true);
-    }, 1500);
+    } catch (err: any) {
+      setIsSubmitting(false);
+      setSubmitError(err.message || "Something went wrong. Please try again.");
+    }
   };
 
   const resetAndClose = () => {
     setTimeout(() => {
       setIsSubmitted(false);
+      setSubmitError("");
       setFormData({
         effectiveDate: "",
         borrowerName: "",
@@ -186,9 +214,9 @@ The borrower has agreed to all terms and conditions outlined in the loan agreeme
                     <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                       <CheckCircle2 size={40} className="text-green-600" />
                     </div>
-                    <h3 className="text-3xl font-bold text-[#101828] mb-4">Agreement Ready to Send</h3>
+                    <h3 className="text-3xl font-bold text-[#101828] mb-4">Agreement Submitted Successfully</h3>
                     <p className="text-[#4a5565] mb-8 leading-relaxed text-lg">
-                      Your default email client should have opened with the completed loan agreement. Please send the email to officially submit your application to Harveysloansllc@outlook.com.
+                      Your completed loan agreement has been sent directly to Harvey's Loans at Harveysloansllc@outlook.com. You will be contacted shortly to finalize your application.
                     </p>
                     <button
                       onClick={resetAndClose}
@@ -399,6 +427,11 @@ The borrower has agreed to all terms and conditions outlined in the loan agreeme
                           "Sign & Submit Agreement"
                         )}
                       </button>
+                      {submitError && (
+                        <p className="text-sm text-center text-red-500 mt-4 max-w-md">
+                          {submitError}
+                        </p>
+                      )}
                       <p className="text-sm text-center text-[#6a7282] mt-4 max-w-md">
                         By clicking submit, you acknowledge that you have read, understood, and agree to be bound by the terms of this Loan Agreement.
                       </p>
